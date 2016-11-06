@@ -22,15 +22,16 @@ plt.rcParams['figure.titlesize'] = 13
 
 def load_sound_files(file_paths):
     raw_sounds = []
+    path="Data/"
     for fp in file_paths:
-        X, sr = librosa.load(fp)
+        X, sr = librosa.load(path+fp)
         raw_sounds.append(X)
     return raw_sounds
 
 
 def plot_waves(sound_names, raw_sounds):
     i = 1
-    fig = plt.figure(figsize=(25, 60), dpi=900)
+    fig = plt.figure(figsize=(25, 60))
     for n, f in zip(sound_names, raw_sounds):
         plt.subplot(10, 1, i)
         librosa.display.waveplot(np.array(f), sr=22050)
@@ -42,7 +43,7 @@ def plot_waves(sound_names, raw_sounds):
 
 def plot_specgram(sound_names, raw_sounds):
     i = 1
-    fig = plt.figure(figsize=(25, 60), dpi=900)
+    fig = plt.figure(figsize=(25, 60))
     for n, f in zip(sound_names, raw_sounds):
         plt.subplot(10, 1, i)
         specgram(np.array(f), Fs=22050)
@@ -54,7 +55,7 @@ def plot_specgram(sound_names, raw_sounds):
 
 def plot_log_power_specgram(sound_names, raw_sounds):
     i = 1
-    fig = plt.figure(figsize=(25, 60), dpi=900)
+    fig = plt.figure(figsize=(25, 60))
     for n, f in zip(sound_names, raw_sounds):
         plt.subplot(10, 1, i)
         D = librosa.logamplitude(np.abs(librosa.stft(f)) ** 2, ref_power=np.max)
@@ -74,9 +75,9 @@ sound_names = ["air conditioner","car horn","children playing","dog bark","drill
 raw_sounds = load_sound_files(sound_file_paths)
 
 
-plot_waves(sound_names,raw_sounds)
-plot_specgram(sound_names,raw_sounds)
-plot_log_power_specgram(sound_names,raw_sounds)
+#plot_waves(sound_names,raw_sounds)
+#plot_specgram(sound_names,raw_sounds)
+#plot_log_power_specgram(sound_names,raw_sounds)
 
 
 def extract_feature(file_name):
@@ -96,7 +97,7 @@ def parse_audio_files(parent_dir,sub_dirs,file_ext='*.wav'):
             mfccs, chroma, mel, contrast,tonnetz = extract_feature(fn)
             ext_features = np.hstack([mfccs,chroma,mel,contrast,tonnetz])
             features = np.vstack([features,ext_features])
-            labels = np.append(labels, fn.split('/')[2].split('-')[1])
+            labels = np.append(labels, fn.split('/')[4].split('-')[1])
     return np.array(features), np.array(labels, dtype = np.int)
 
 def one_hot_encode(labels):
@@ -106,7 +107,7 @@ def one_hot_encode(labels):
     one_hot_encode[np.arange(n_labels), labels] = 1
     return one_hot_encode
 
-parent_dir = 'Sound-Data'
+parent_dir = 'Data/UrbanSound8K/audio/'
 
 sub_dirs = ['fold1','fold2','fold3']
 features, labels = parse_audio_files(parent_dir,sub_dirs)
